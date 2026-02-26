@@ -3,16 +3,12 @@
 
 #define MAX 1000
 
+
 struct Job {
     int id;
     int compute;
     int deadline;
 };
-
-int globalID = 1;   // To give unique ID to jobs across days
-
-
-// ---------------- MERGE SORT ----------------
 
 void merge(struct Job arr[], int left, int mid, int right) {
     int i, j, k;
@@ -27,23 +23,25 @@ void merge(struct Job arr[], int left, int mid, int right) {
     for (j = 0; j < n2; j++)
         R[j] = arr[mid + 1 + j];
 
-    i = 0; j = 0; k = left;
+    i = 0;
+    j = 0;
+    k = left;
+
+    // used edf + shorest compute first
 
     while (i < n1 && j < n2) {
-
-        // EDF (Earliest Deadline First)
-        if (L[i].deadline < R[j].deadline)
+        if (L[i].deadline < R[j].deadline) {
             arr[k++] = L[i++];
-
-        else if (L[i].deadline > R[j].deadline)
+        }
+        else if (L[i].deadline > R[j].deadline) {
             arr[k++] = R[j++];
-
+        }
         else {
-            // If same deadline → shortest compute first
-            if (L[i].compute <= R[j].compute)
+            if (L[i].compute <= R[j].compute) {
                 arr[k++] = L[i++];
-            else
+            } else {
                 arr[k++] = R[j++];
+            }
         }
     }
 
@@ -54,28 +52,41 @@ void merge(struct Job arr[], int left, int mid, int right) {
         arr[k++] = R[j++];
 }
 
+
 void mergeSort(struct Job arr[], int left, int right) {
     if (left < right) {
         int mid = (left + right) / 2;
+
         mergeSort(arr, left, mid);
         mergeSort(arr, mid + 1, right);
+
         merge(arr, left, mid, right);
     }
 }
 
-// ---------------- UTIL FUNCTIONS ----------------
-
-int removeExpiredJobs(struct Job jobs[], int n, int today) {
+int removeExpiredJobs(struct Job jobs[], int n, int today, struct Job valid[]) {
     int count = 0;
 
     for (int i = 0; i < n; i++) {
         if (jobs[i].deadline >= today) {
-            jobs[count++] = jobs[i];   // shift valid jobs forward
+            valid[count++] = jobs[i];
         }
     }
 
     return count;
 }
+
+
+int selectJobs(struct Job jobs[], int n, int N, struct Job selected[]) {
+    int count = 0;
+
+    for (int i = 0; i < n && count < N; i++) {
+        selected[count++] = jobs[i];
+    }
+
+    return count;
+}
+
 
 int calculateTotalCompute(struct Job selected[], int count) {
     int total = 0;
@@ -84,92 +95,67 @@ int calculateTotalCompute(struct Job selected[], int count) {
     return total;
 }
 
+
 void printJobs(struct Job jobs[], int count, char title[]) {
     printf("\n%s\n", title);
-    printf("---------------------------------\n");
+    printf("--------------------------------\n");
     for (int i = 0; i < count; i++) {
         printf("Job %d | Compute: %d | Deadline: %d\n",
                jobs[i].id, jobs[i].compute, jobs[i].deadline);
     }
-    if (count == 0)
-        printf("None\n");
 }
-
-
-// ---------------- MAIN LOOP ----------------
 
 int main() {
 
-    struct Job backlog[MAX];  // stores remaining jobs across days
-    int backlogCount = 0;
+    int n, today, N;
 
-    int day = 1;
-    int choice = 1;
+    printf("Enter number of jobs: ");
+    scanf("%d", &n);
 
-    while (choice) {
+    struct Job jobs[n];
+    struct Job valid[n];
+    struct Job selected[n];
+    struct Job remaining[n];
 
-        printf("\n=================================\n");
-        printf("DAY %d\n", day);
-        printf("=================================\n");
-
-        int newJobs;
-        printf("Enter number of new jobs today: ");
-        scanf("%d", &newJobs);
-
-        // Add new jobs to backlog
-        for (int i = 0; i < newJobs; i++) {
-            backlog[backlogCount].id = globalID++;
-            printf("Enter compute and deadline: ");
-            scanf("%d %d",
-                  &backlog[backlogCount].compute,
-                  &backlog[backlogCount].deadline);
-            backlogCount++;
-        }
-
-        int N;
-        printf("Enter number of jobs to execute today: ");
-        scanf("%d", &N);
-
-        // Step 1: Remove expired jobs
-        int beforeRemoval = backlogCount;
-        backlogCount = removeExpiredJobs(backlog, backlogCount, day);
-        int expired = beforeRemoval - backlogCount;
-
-        // Step 2: Sort remaining jobs
-        if (backlogCount > 0)
-            mergeSort(backlog, 0, backlogCount - 1);
-
-        // Step 3: Select first N jobs
-        struct Job selected[MAX];
-        int selectedCount = 0;
-
-        for (int i = 0; i < backlogCount && selectedCount < N; i++)
-            selected[selectedCount++] = backlog[i];
-
-        // Step 4: Remove selected jobs from backlog
-        for (int i = selectedCount; i < backlogCount; i++)
-            backlog[i - selectedCount] = backlog[i];
-
-        backlogCount -= selectedCount;
-
-        // Step 5: Metrics
-        int totalCompute = calculateTotalCompute(selected, selectedCount);
-
-        // ----------- OUTPUT -------------
-
-        printJobs(selected, selectedCount, "Executed Jobs");
-        printJobs(backlog, backlogCount, "Remaining Backlog");
-
-        printf("\nTotal Compute Today: %d\n", totalCompute);
-        printf("Expired Jobs Today: %d\n", expired);
-        printf("Backlog Size End of Day: %d\n", backlogCount);
-
-        printf("\nContinue to next day? (1 = Yes / 0 = Exit): ");
-        scanf("%d", &choice);
-
-        day++;
+    for (int i = 0; i < n; i++) {
+        jobs[i].id = i + 1;
+        printf("Enter compute and deadline for Job %d: ", i + 1);
+        scanf("%d %d", &jobs[i].compute, &jobs[i].deadline);
     }
 
-    printf("\nSystem Stopped.\n");
+    printf("Enter today's day: ");
+    scanf("%d", &today);
+
+    printf("Enter number of jobs to execute today (N): ");
+    scanf("%d", &N);
+
+    // Step 1: Remove expired jobs
+    int validCount = removeExpiredJobs(jobs, n, today, valid);
+
+    // Step 2: Sort valid jobs
+    mergeSort(valid, 0, validCount - 1);
+
+    // Step 3: Select first N jobs
+    int selectedCount = selectJobs(valid, validCount, N, selected);
+
+    // Step 4: Determine remaining jobs
+    int remainingCount = 0;
+    for (int i = selectedCount; i < validCount; i++) {
+        remaining[remainingCount++] = valid[i];
+    }
+
+    // Step 5: Metrics
+    int totalCompute = calculateTotalCompute(selected, selectedCount);
+
+    // ---------------- OUTPUT ----------------
+
+    printJobs(selected, selectedCount, "Selected Jobs for Today");
+
+    printJobs(remaining, remainingCount, "Remaining Jobs");
+
+    printf("\nTotal Compute Today: %d\n", totalCompute);
+    printf("Expired Jobs: %d\n", n - validCount);
+    printf("Backlog Size: %d\n", remainingCount);
+
     return 0;
 }
