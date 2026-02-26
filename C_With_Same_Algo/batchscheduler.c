@@ -3,7 +3,6 @@
 
 #define MAX 1000
 
-
 struct Job {
     int id;
     int compute;
