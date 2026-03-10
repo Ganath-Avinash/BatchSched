@@ -19,6 +19,7 @@
 let computeChart = null;
 let backlogChart = null;
 let comparisonChart = null;
+let inlineComparisonChart = null;
 let varianceChart = null;
 
 /* ─────────────────────────────────────────────
@@ -209,6 +210,66 @@ function renderComparisonChart(canvasId, data) {
             ],
         },
         options: baseOptions('Strategy Comparison — Daily Compute Load'),
+    });
+}
+
+function renderInlineComparisonChart(canvasId, data) {
+    const ctx = document.getElementById(canvasId).getContext('2d');
+    if (inlineComparisonChart) inlineComparisonChart.destroy();
+
+    const days = data.edf.map((_, i) => `Day ${i + 1}`);
+
+    const makeDataset = (label, results, color) => ({
+        label,
+        data: results.map(r => r.totalCompute),
+        borderColor: color,
+        backgroundColor: color + '26',
+        borderWidth: 2,
+        pointRadius: 2,
+        fill: false,
+        tension: 0.4,
+    });
+
+    inlineComparisonChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: days,
+            datasets: [
+                makeDataset('EDF', data.edf, PALETTE.edf),
+                makeDataset('LCF', data.lcf, PALETTE.lcf),
+                makeDataset('Random', data.random, PALETTE.random),
+            ],
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: { duration: 500, easing: 'easeInOutQuart' },
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: { color: PALETTE.text, font: { family: "'Inter', sans-serif", size: 10 }, boxWidth: 10, padding: 8 }
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(15,23,42,0.9)',
+                    titleColor: '#fff',
+                    bodyColor: PALETTE.text,
+                    borderColor: PALETTE.primary,
+                    borderWidth: 1,
+                    cornerRadius: 8,
+                },
+            },
+            scales: {
+                x: {
+                    ticks: { color: PALETTE.text, font: { family: "'Inter', sans-serif", size: 10 } },
+                    grid: { color: PALETTE.gridLine },
+                },
+                y: {
+                    ticks: { color: PALETTE.text, font: { family: "'Inter', sans-serif", size: 10 } },
+                    grid: { color: PALETTE.gridLine },
+                    beginAtZero: true,
+                },
+            },
+        },
     });
 }
 

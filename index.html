@@ -102,9 +102,9 @@
         <div class="day-control" style="margin-top:0.85rem;">
           <span>Current Day</span>
           <div style="display:flex; align-items:center; gap:0.6rem;">
-            <button class="btn-ghost" style="padding:0.3rem 0.65rem; font-size:0.85rem;" onclick="changeDay(-1)">◀</button>
+            <button class="btn-ghost" style="padding:0.3rem 0.65rem; font-size:0.85rem;" onclick="changeDay(-1)">&lt;</button>
             <strong id="dayDisplay">1</strong>
-            <button class="btn-ghost" style="padding:0.3rem 0.65rem; font-size:0.85rem;" onclick="changeDay(1)">▶</button>
+            <button class="btn-ghost" style="padding:0.3rem 0.65rem; font-size:0.85rem;" onclick="changeDay(1)">&gt;</button>
           </div>
         </div>
       </div>
@@ -114,7 +114,7 @@
       <!-- Sub-section: Actions -->
       <div class="btn-group">
         <button class="btn-primary" id="runBtn" onclick="handleRunScheduler()">
-          ▶ Run Today's Scheduler
+          Run Today's Scheduler
         </button>
 
         <div class="btn-row">
@@ -161,30 +161,30 @@
     </section>
 
     <!-- ─── METRICS CARD ──────────────────────────────── -->
-    <section class="card" id="metricsCard" aria-label="Metrics">
+    <section class="card" id="metricsCard" aria-label="Metrics" style="display: flex; flex-direction: column;">
       <div class="card-title">
-        <span class="icon">📊</span> Live Metrics
+        <span class="icon"></span> Live Metrics
         <div style="margin-left:auto; font-size:0.7rem; color:var(--text-muted);" id="lastRunLabel">No run yet</div>
       </div>
 
       <div class="metrics-grid">
         <div class="metric-tile tile-primary">
-          <span class="metric-icon">⚡</span>
+          <span class="metric-icon"></span>
           <div class="metric-value" id="m-compute">—</div>
           <div class="metric-label">Compute Today</div>
         </div>
         <div class="metric-tile tile-secondary">
-          <span class="metric-icon">📦</span>
+          <span class="metric-icon"></span>
           <div class="metric-value" id="m-selected">—</div>
           <div class="metric-label">Jobs Selected</div>
         </div>
         <div class="metric-tile tile-danger">
-          <span class="metric-icon">⏳</span>
+          <span class="metric-icon"></span>
           <div class="metric-value" id="m-expired">—</div>
           <div class="metric-label">Expired Today</div>
         </div>
         <div class="metric-tile tile-warn">
-          <span class="metric-icon">🗂️</span>
+          <span class="metric-icon"></span>
           <div class="metric-value" id="m-backlog">—</div>
           <div class="metric-label">Backlog</div>
         </div>
@@ -194,7 +194,7 @@
           <div class="metric-label">Load Variance</div>
         </div>
         <div class="metric-tile tile-primary" style="--tile-accent:#38f9d7;">
-          <span class="metric-icon">📈</span>
+          <span class="metric-icon"></span>
           <div class="metric-value" id="m-avgLoad">—</div>
           <div class="metric-label">Avg Load/Day</div>
         </div>
@@ -206,6 +206,17 @@
         <span class="pill pill-safe" id="strategySummaryPill">EDF + Smoothing</span>
         <span style="font-size:0.75rem; color:var(--text-muted); margin-left:auto;" id="poolSizeLabel">Pool: 0 jobs</span>
       </div>
+
+      <!-- Inline Strategy Comparison -->
+      <div style="margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid var(--border-gentle); flex: 1; display: flex; flex-direction: column;">
+        <div style="font-size:0.75rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:1rem; display:flex; justify-content:space-between; align-items:center;">
+          <span>Strategy Comparison Pipeline</span>
+          <button class="btn-ghost" style="padding:0.2rem 0.5rem; font-size:0.7rem;" onclick="updateInlineComparison()">Analyze</button>
+        </div>
+        <div style="position: relative; flex: 1; min-height: 200px; width: 100%;">
+          <canvas id="inlineComparisonChart"></canvas>
+        </div>
+      </div>
     </section>
 
     <!-- ─── TABLES SECTION ────────────────────────────── -->
@@ -216,7 +227,7 @@
         <div class="table-card">
           <div class="table-header">
             <div class="table-title" style="color:var(--warn);">
-              🟡 Pending Jobs
+               Pending Jobs
             </div>
             <span class="table-badge" id="pendingBadge">0</span>
           </div>
@@ -231,7 +242,7 @@
                 </tr>
               </thead>
               <tbody id="pendingBody">
-                <tr><td colspan="4"><div class="empty-state"><span class="empty-icon">📭</span>No pending jobs</div></td></tr>
+                <tr><td colspan="4"><div class="empty-state"><span class="empty-icon"></span>No pending jobs</div></td></tr>
               </tbody>
             </table>
           </div>
@@ -241,7 +252,7 @@
         <div class="table-card">
           <div class="table-header">
             <div class="table-title" style="color:var(--accent);">
-              ✅ Selected (Running)
+               Selected (Running)
             </div>
             <span class="table-badge" id="selectedBadge">0</span>
           </div>
@@ -256,7 +267,7 @@
                 </tr>
               </thead>
               <tbody id="selectedBody">
-                <tr><td colspan="4"><div class="empty-state"><span class="empty-icon">⏳</span>Run the scheduler</div></td></tr>
+                <tr><td colspan="4"><div class="empty-state"><span class="empty-icon"></span>Run the scheduler</div></td></tr>
               </tbody>
             </table>
           </div>
@@ -266,7 +277,7 @@
         <div class="table-card">
           <div class="table-header">
             <div class="table-title" style="color:var(--danger);">
-              ❌ Expired (Missed)
+               Expired (Missed)
             </div>
             <span class="table-badge" id="expiredBadge">0</span>
           </div>
@@ -281,7 +292,7 @@
                 </tr>
               </thead>
               <tbody id="expiredBody">
-                <tr><td colspan="4"><div class="empty-state"><span class="empty-icon">✔️</span>None expired yet</div></td></tr>
+                <tr><td colspan="4"><div class="empty-state"><span class="empty-icon"></span>None expired yet</div></td></tr>
               </tbody>
             </table>
           </div>
@@ -290,26 +301,26 @@
       </div>
     </section>
 
-    <!-- ─── CHARTS SECTION ────────────────────────────── -->
+    <!-- ── CHARTS SECTION ────────────────────────────── -->
     <section id="chartsSection" aria-label="Charts">
       <div class="charts-grid">
         <div class="chart-card">
-          <div class="chart-title">⚡ Daily Compute Load</div>
+          <div class="chart-title"> Daily Compute Load</div>
           <div class="chart-wrapper"><canvas id="computeChart"></canvas></div>
         </div>
         <div class="chart-card">
-          <div class="chart-title">🗂️ Backlog Size Over Time</div>
+          <div class="chart-title"> Backlog Size Over Time</div>
           <div class="chart-wrapper"><canvas id="backlogChart"></canvas></div>
         </div>
         <div class="chart-card">
-          <div class="chart-title">📉 Load Variance Over Time</div>
+          <div class="chart-title"> Load Variance Over Time</div>
           <div class="chart-wrapper"><canvas id="varianceChart"></canvas></div>
         </div>
         <div class="chart-card" id="placeholderChartCard">
-          <div class="chart-title">📋 Run Summary</div>
+          <div class="chart-title"> Run Summary</div>
           <div id="runSummaryPanel" style="padding:0.5rem 0;">
             <div class="empty-state" style="padding:3rem 1rem;">
-              <span class="empty-icon">🚀</span>
+              <span class="empty-icon"></span>
               Press <strong>"Run Today's Scheduler"</strong> or <strong>"Simulate 7 Days"</strong> to see results here.
             </div>
           </div>
@@ -333,13 +344,13 @@
 <div id="stepModal" role="dialog" aria-modal="true" aria-label="Step-by-step walkthrough">
   <div class="modal-box">
     <div class="modal-header">
-      <h2 style="font-size:1.1rem;">🔍 Step-by-Step Scheduling</h2>
+      <h2 style="font-size:1.1rem;"> Step-by-Step Scheduling</h2>
       <button class="modal-close" onclick="closeStepModal()" aria-label="Close">✕</button>
     </div>
     <ul class="step-list" id="stepList"></ul>
     <div style="margin-top:1.25rem; display:flex; gap:0.65rem; justify-content:flex-end;">
       <button class="btn-ghost" onclick="closeStepModal()">Close</button>
-      <button class="btn-primary" onclick="handleRunScheduler(); closeStepModal();">▶ Run Now</button>
+      <button class="btn-primary" onclick="handleRunScheduler(); closeStepModal();"> Run Now</button>
     </div>
   </div>
 </div>
@@ -350,7 +361,7 @@
 <div id="comparisonOverlay" role="dialog" aria-modal="true" aria-label="Strategy comparison chart">
   <div class="comparison-box">
     <div class="modal-header">
-      <h2 style="font-size:1.1rem;">📊 Strategy Comparison — 7 Day Simulation</h2>
+      <h2 style="font-size:1.1rem;">Strategy Comparison — 7 Day Simulation</h2>
       <button class="modal-close" onclick="closeComparisonOverlay()" aria-label="Close">✕</button>
     </div>
     <p style="font-size:0.82rem; margin-bottom:0.5rem;">Comparing daily compute load across EDF+Smoothing, Largest Compute First, and Random Selection over 7 simulated days with the same random seed conditions.</p>
@@ -438,7 +449,15 @@ document.addEventListener('DOMContentLoaded', () => {
   if (getJobPool().length === 0) {
     seedDemoJobs();
   }
+
+  updateInlineComparison();
 });
+
+function updateInlineComparison() {
+  const N = getN();
+  const data = compareStrategies(7, N, 5);
+  renderInlineComparisonChart('inlineComparisonChart', data);
+}
 
 function seedDemoJobs() {
   const demos = [
@@ -450,7 +469,7 @@ function seedDemoJobs() {
   });
   renderPendingTable(getJobPool());
   updatePoolSizeLabel();
-  showToast('Demo jobs loaded. Press ▶ Run to begin!', 'info');
+  showToast('Demo jobs loaded. Press Run to begin!', 'info');
 }
 
 /* ─────────────────────────────────────────────
@@ -621,7 +640,7 @@ function handleInjectWorstCase() {
   const injected = injectWorstCaseTomorrow(today);
   renderPendingTable(getJobPool());
   updatePoolSizeLabel();
-  showToast(`⚠️ Worst-case injected: ${injected.length} heavy/urgent jobs added!`, 'warn');
+  showToast(`Worst-case injected: ${injected.length} heavy/urgent jobs added!`, 'warn');
 }
 
 /* ─────────────────────────────────────────────
@@ -719,8 +738,8 @@ function buildStepList(pool, N, strategy, day) {
     {
       title: 'Robustness Check',
       detail: selected.every(j => j.deadline >= day)
-        ? '✅ All selected jobs meet their deadlines. Schedule is feasible.'
-        : '⚠️ Some selected jobs are at deadline today — highest urgency protected.',
+        ? ' All selected jobs meet their deadlines. Schedule is feasible.'
+        : ' Some selected jobs are at deadline today — highest urgency protected.',
     },
   ];
 }
@@ -760,7 +779,7 @@ function handleReset() {
   // 4. Reset the run summary panel
   document.getElementById('runSummaryPanel').innerHTML = `
     <div class="empty-state" style="padding:3rem 1rem;">
-      <span class="empty-icon" style="font-size:2rem;">↺</span>
+      <span class="empty-icon" style="font-size:2rem;"></span>
       Reset complete. Add jobs and press run!
     </div>`;
 
@@ -780,7 +799,7 @@ function renderPendingTable(jobs) {
   badge.textContent = jobs.length;
 
   if (jobs.length === 0) {
-    body.innerHTML = `<tr><td colspan="4"><div class="empty-state"><span class="empty-icon">📭</span>No pending jobs</div></td></tr>`;
+    body.innerHTML = `<tr><td colspan="4"><div class="empty-state"><span class="empty-icon"></span>No pending jobs</div></td></tr>`;
     return;
   }
 
@@ -803,7 +822,7 @@ function renderSelectedTable(jobs) {
   badge.textContent = jobs.length;
 
   if (jobs.length === 0) {
-    body.innerHTML = `<tr><td colspan="4"><div class="empty-state"><span class="empty-icon">⏳</span>Run the scheduler</div></td></tr>`;
+    body.innerHTML = `<tr><td colspan="4"><div class="empty-state"><span class="empty-icon"></span>Run the scheduler</div></td></tr>`;
     return;
   }
 
@@ -814,7 +833,7 @@ function renderSelectedTable(jobs) {
         <td><code>#${j.id}</code></td>
         <td><strong style="color:var(--accent)">${j.compute}</strong></td>
         <td>Day ${j.deadline}</td>
-        <td><span class="pill pill-safe">✔ Scheduled</span></td>
+        <td><span class="pill pill-safe">Scheduled</span></td>
       </tr>`;
   }).join('');
 }
@@ -828,7 +847,7 @@ function renderExpiredTable(jobs) {
   badge.textContent = unique.length;
 
   if (unique.length === 0) {
-    body.innerHTML = `<tr><td colspan="4"><div class="empty-state"><span class="empty-icon">✔️</span>None expired yet</div></td></tr>`;
+    body.innerHTML = `<tr><td colspan="4"><div class="empty-state"><span class="empty-icon"></span>None expired yet</div></td></tr>`;
     return;
   }
 
@@ -854,17 +873,17 @@ function urgencyClass(job, day) {
   if (job.deadline <= day) {
     return {
       rowClass: 'row-urgent',
-      pill: '<span class="pill pill-urgent">🔴 Due Today</span>',
+      pill: '<span class="pill pill-urgent">Due Today</span>',
     };
   } else if (job.deadline === day + 1) {
     return {
       rowClass: 'row-soon',
-      pill: '<span class="pill pill-soon">🟠 Tomorrow</span>',
+      pill: '<span class="pill pill-soon">Tomorrow</span>',
     };
   }
   return {
     rowClass: 'row-safe',
-    pill: '<span class="pill pill-safe">🟢 Safe</span>',
+    pill: '<span class="pill pill-safe">Safe</span>',
   };
 }
 
@@ -930,7 +949,7 @@ function renderRunSummary(result) {
     <div style="display:flex; flex-direction:column; gap:0.65rem; padding:0.25rem 0;">
       <div style="display:flex; justify-content:space-between; align-items:center;">
         <span style="font-size:0.8rem; color:var(--text-muted);">Day ${result.day} — ${result.strategy.toUpperCase()}</span>
-        <span class="pill pill-safe">✔ Complete</span>
+        <span class="pill pill-safe">Complete</span>
       </div>
       ${summaryRow('Jobs Scheduled',    result.selected.length,   'var(--accent)')}
       ${summaryRow('Compute Dispatched', result.totalCompute,     'var(--primary-light)')}
@@ -958,7 +977,7 @@ function renderMultiDaySummary(results) {
     <div style="display:flex; flex-direction:column; gap:0.65rem; padding:0.25rem 0;">
       <div style="display:flex; justify-content:space-between; align-items:center;">
         <span style="font-size:0.8rem; color:var(--text-muted);">${results.length}-Day Summary</span>
-        <span class="pill pill-safe">✔ Complete</span>
+        <span class="pill pill-safe">Complete</span>
       </div>
       ${summaryRow('Total Scheduled', totalSelected, 'var(--accent)')}
       ${summaryRow('Total Compute',   totalCompute,  'var(--primary-light)')}
@@ -1020,11 +1039,11 @@ localStorage.removeItem('theme');
    TOAST NOTIFICATIONS
    ───────────────────────────────────────────── */
 function showToast(message, type = 'info') {
-  const icons = { success: '✅', error: '❌', warn: '⚠️', info: 'ℹ️' };
+  const icons = { success: '', error: '', warn: '', info: '' };
   const container = document.getElementById('toastContainer');
   const toast = document.createElement('div');
   toast.className = `toast toast-${type}`;
-  toast.innerHTML = `<span>${icons[type] || 'ℹ️'}</span> ${message}`;
+  toast.innerHTML = `<span>${icons[type] || ''}</span> ${message}`;
   container.appendChild(toast);
 
   setTimeout(() => {
